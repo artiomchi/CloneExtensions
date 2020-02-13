@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CloneExtensions.UnitTests.Base;
@@ -9,6 +9,33 @@ namespace CloneExtensions.UnitTests
     [TestClass]
     public class CollectionTests : TestBase
     {
+        [TestMethod]
+        public void GetClone_ICollection_ListOfInts_Cloned()
+        {
+            ICollection<int> source = Enumerable.Range(0, 10).ToList();
+            var target = CloneFactory.GetClone(source);
+            Assert.AreNotSame(source, target);
+            Assert.IsTrue(source.SequenceEqual(target));
+        }
+
+        [TestMethod]
+        public void GetClone_ICollection_ArrayOfInts_Cloned()
+        {
+            ICollection<int> source = Enumerable.Range(0, 10).ToArray();
+            var target = CloneFactory.GetClone(source);
+            Assert.AreNotSame(source, target);
+            Assert.IsTrue(source.SequenceEqual(target));
+        }
+
+        [TestMethod]
+        public void GetClone_ICollection_ArrayOfEnum_Cloned()
+        {
+            ICollection<GCCollectionMode> source = Enumerable.Range(0, 10).Select(e => (GCCollectionMode)e).ToArray();
+            var target = CloneFactory.GetClone(source);
+            Assert.AreNotSame(source, target);
+            Assert.IsTrue(source.SequenceEqual(target));
+        }
+
         [TestMethod]
         public void GetClone_ListOfInts_Cloned()
         {

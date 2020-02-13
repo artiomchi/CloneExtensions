@@ -58,6 +58,11 @@ namespace CloneExtensions
             return type.GetTypeInfo().GetInterfaces();
         }
 
+        public static MethodInfo GetMethod(this Type type, string methodName)
+        {
+            return type.GetTypeInfo().GetMethod(methodName);
+        }
+
         public static bool IsAssignableFrom(this Type type, Type c)
         {
             return type.GetTypeInfo().IsAssignableFrom(c);
