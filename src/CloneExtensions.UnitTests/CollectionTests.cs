@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using CloneExtensions.UnitTests.Base;
@@ -37,9 +37,28 @@ namespace CloneExtensions.UnitTests
         }
 
         [TestMethod]
+        public void GetClone_ICollectionOfClass_ReferenceEqualityReturnsFalse()
+        {
+            ICollection<MyClass> source = Enumerable.Range(1, 10).Select(x => new MyClass() { _field = x, Property = x }).ToList();
+            var target = CloneFactory.GetClone(source);
+            Assert.AreNotSame(source, target);
+            Assert.IsTrue(source.SequenceEqual(target));
+            Assert.IsFalse(source.Zip(target, (s, t) => new { s, t }).Any(x => ReferenceEquals(x.s, x.t)));
+        }
+
+        [TestMethod]
         public void GetClone_ListOfInts_Cloned()
         {
             var source = Enumerable.Range(0, 10).ToList();
+            var target = CloneFactory.GetClone(source);
+            Assert.AreNotSame(source, target);
+            Assert.IsTrue(source.SequenceEqual(target));
+        }
+
+        [TestMethod]
+        public void GetClone_IListOfInts_Cloned()
+        {
+            IList<int> source = Enumerable.Range(0, 10).ToList();
             var target = CloneFactory.GetClone(source);
             Assert.AreNotSame(source, target);
             Assert.IsTrue(source.SequenceEqual(target));
@@ -52,6 +71,15 @@ namespace CloneExtensions.UnitTests
             var target = CloneFactory.GetClone(source, CloningFlags.Properties);
             Assert.AreNotSame(source, target);
             Assert.AreEqual(source.Count, target.Capacity);
+            Assert.AreEqual(0, target.Count);
+        }
+
+        [TestMethod]
+        public void GetClone_IListOfIntsCloningFlagsCollectionItemsNotProvided_ItemsNotCloned()
+        {
+            IList<int> source = Enumerable.Range(0, 10).ToList();
+            var target = CloneFactory.GetClone(source, CloningFlags.Properties);
+            Assert.AreNotSame(source, target);
             Assert.AreEqual(0, target.Count);
         }
 
@@ -69,10 +97,7 @@ namespace CloneExtensions.UnitTests
         public void GetClone_IListOfClass_ReferenceEqualityReturnsFalse()
         {
             IList<MyClass> source = Enumerable.Range(1, 10).Select(x => new MyClass() { _field = x, Property = x }).ToList();
-            var initializers = new Dictionary<Type, Func<object, object>>() {
-                { typeof(IList<MyClass>), (s) => new List<MyClass>() }
-            };
-            var target = CloneFactory.GetClone(source, initializers);
+            var target = CloneFactory.GetClone(source);
             Assert.AreNotSame(source, target);
             Assert.IsTrue(source.SequenceEqual(target));
             Assert.IsFalse(source.Zip(target, (s, t) => new { s, t }).Any(x => ReferenceEquals(x.s, x.t)));

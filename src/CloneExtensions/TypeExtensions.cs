@@ -63,6 +63,11 @@ namespace CloneExtensions
             return type.GetTypeInfo().GetMethod(methodName);
         }
 
+        public static PropertyInfo GetProperty(this Type type, string propertyName)
+        {
+            return type.GetTypeInfo().GetProperty(propertyName);
+        }
+
         public static bool IsAssignableFrom(this Type type, Type c)
         {
             return type.GetTypeInfo().IsAssignableFrom(c);

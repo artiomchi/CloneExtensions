@@ -140,7 +140,10 @@ namespace CloneExtensions
             {
                 return new KeyValuePairExpressionFactory<T>(source, target, flags, initializers, clonedObjects);
             }
-            else if (_type.IsGenericType() && _type.GetGenericTypeDefinition() == typeof(List<>))
+            else if (_type.IsGenericType() &&
+                (_type.GetGenericTypeDefinition() == typeof(IList<>)
+                || _type.GetGenericTypeDefinition() == typeof(List<>)
+                || _type.GetGenericTypeDefinition() == typeof(ICollection<>)))
             {
                 var itemType = _type.GetGenericArguments()[0];
 
@@ -148,18 +151,9 @@ namespace CloneExtensions
                 {
                     return new ListPrimitiveTypeExpressionFactory<T>(source, target, flags, initializers, clonedObjects);
                 }
-            }
-            else if (_type.IsGenericType() && _type.GetGenericTypeDefinition() == typeof(ICollection<>))
-            {
-                var itemType = _type.GetGenericArguments()[0];
-
-                if (itemType.UsePrimitive())
-                {
-                    return new CollectionPrimitiveTypeExpressionFactory<T>(source, target, flags, initializers, clonedObjects);
-                }
                 else
                 {
-                    return new CollectionExpressionFactory<T>(source, target, flags, initializers, clonedObjects);
+                    return new ListExpressionFactory<T>(source, target, flags, initializers, clonedObjects);
                 }
             }
 
